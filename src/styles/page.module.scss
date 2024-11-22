@@ -1,4 +1,14 @@
 .test {
+  display: flex;
+  justify-content: space-evenly;
+  padding: 1rem;
   width: 100%;
   border: 1px solid black;
+
+  input {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background-color: lightblue;
+    outline: none;
+  }
 }
