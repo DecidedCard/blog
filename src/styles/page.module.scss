@@ -23,3 +23,21 @@
     color: white;
   }
 }
+
+.posts {
+  display: flex;
+  flex-direction: column;
+
+  h2 {
+    font-size: 26px;
+  }
+}
+
+.post_card {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  width: fit-content;
+  border: 1px solid black;
+  border-radius: 0.5rem;
+}
