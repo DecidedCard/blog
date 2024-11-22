@@ -1,14 +1,25 @@
 .test {
-  display: flex;
-  justify-content: space-evenly;
   padding: 1rem;
   width: 100%;
   border: 1px solid black;
+
+  form {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+  }
 
   input {
     padding: 1rem;
     border-radius: 0.5rem;
     background-color: lightblue;
     outline: none;
+  }
+
+  button {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background-color: blue;
+    color: white;
   }
 }
