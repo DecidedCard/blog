@@ -3,6 +3,7 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 
 import styles from "@/styles/page.module.scss";
+import { insertPost } from "@/api/supabase";
 
 export interface Post {
   title: string;
@@ -14,7 +15,8 @@ export default function Home() {
 
   console.log(watch());
 
-  const onSubmitHandler: SubmitHandler<Post> = (data) => {
+  const onSubmitHandler: SubmitHandler<Post> = async (data) => {
+    await insertPost(data);
     console.log(data);
   };
 
