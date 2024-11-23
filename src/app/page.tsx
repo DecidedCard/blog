@@ -53,6 +53,8 @@ export default function Home() {
       setValue("comment", "");
       setValue("title", "");
 
+      setUpdate(null);
+
       return;
     }
 
