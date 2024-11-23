@@ -25,7 +25,7 @@ interface UpdateCheck {
   id: number;
 }
 
-export default function Home() {
+const Home = () => {
   const { register, setValue, handleSubmit } = useForm<InputForm>();
 
   const [posts, setPosts] = useState<Post[] | null>(null);
@@ -110,4 +110,6 @@ export default function Home() {
       )}
     </div>
   );
-}
+};
+
+export default Home;
