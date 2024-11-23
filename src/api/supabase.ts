@@ -21,8 +21,17 @@ export const insertPost = async (post: InputForm) => {
 
   if (error) {
     console.error(error);
-    throw new Error("post를 저장하는 중에 오류가 발생하였습니다.");
+    throw new Error("데이터를 저장하는 중에 오류가 발생하였습니다.");
   }
 
   return data;
+};
+
+export const deletePost = async (id: number) => {
+  const { error } = await clientSupabase.from("post").delete().eq("id", id);
+
+  if (error) {
+    console.error(error);
+    throw new Error("데이터를 제거하는 중에 오류가 발생하였습니다.");
+  }
 };

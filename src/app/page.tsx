@@ -35,8 +35,6 @@ export default function Home() {
     fetch();
   }, []);
 
-  console.log(posts);
-
   const onSubmitHandler: SubmitHandler<InputForm> = async (data) => {
     await insertPost(data);
     console.log(data);
