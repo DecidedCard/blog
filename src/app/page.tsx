@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import { useForm, SubmitHandler } from "react-hook-form";
 
-import { deletePost, insertPost, readPost } from "@/api/supabase";
+import { deletePost, insertPost, readPost, updatePost } from "@/api/supabase";
 
 import styles from "@/styles/page.module.scss";
 
@@ -20,10 +20,16 @@ export interface Post {
   comment: string;
 }
 
+interface UpdateCheck {
+  updateCheck: boolean;
+  id: number;
+}
+
 export default function Home() {
   const { register, setValue, handleSubmit } = useForm<InputForm>();
 
   const [posts, setPosts] = useState<Post[] | null>(null);
+  const [update, setUpdate] = useState<UpdateCheck | null>(null);
 
   const fetch = useCallback(async () => {
     const data = await readPost();
@@ -38,6 +44,18 @@ export default function Home() {
   }, [fetch]);
 
   const onSubmitHandler: SubmitHandler<InputForm> = async (data) => {
+    if (update) {
+      if (update.updateCheck) {
+        await updatePost(update.id, data);
+        await fetch();
+      }
+
+      setValue("comment", "");
+      setValue("title", "");
+
+      return;
+    }
+
     await insertPost(data);
 
     setValue("comment", "");
@@ -52,12 +70,19 @@ export default function Home() {
     await fetch();
   };
 
+  const onClickSetUpdateHandler = (post: Post, id: number) => {
+    setUpdate({ updateCheck: true, id });
+
+    setValue("comment", post.comment);
+    setValue("title", post.title);
+  };
+
   return (
     <div className={styles.test}>
       <form onSubmit={handleSubmit(onSubmitHandler)}>
         <input type="text" placeholder="제목" {...register("title")} />
         <input type="text" placeholder="내용" {...register("comment")} />
-        <button type="submit">등록</button>
+        <button type="submit">{update?.updateCheck ? "수정" : "등록"}</button>
       </form>
 
       {posts && posts.length !== 0 && (
@@ -73,7 +98,7 @@ export default function Home() {
                 <button onClick={() => onClickDeleteHandler(item.id)}>
                   삭제
                 </button>
-                <button onClick={() => onClickDeleteHandler(item.id)}>
+                <button onClick={() => onClickSetUpdateHandler(item, item.id)}>
                   수정
                 </button>
               </div>

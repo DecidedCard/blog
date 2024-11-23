@@ -27,6 +27,19 @@ export const insertPost = async (post: InputForm) => {
   return data;
 };
 
+export const updatePost = async (id: number, post: InputForm) => {
+  const { error } = await clientSupabase
+    .from("post")
+    .update(post)
+    .eq("id", id)
+    .select();
+
+  if (error) {
+    console.error(error);
+    throw new Error("데이터를 업데이트 중에 오류가 발생하였습니다.");
+  }
+};
+
 export const deletePost = async (id: number) => {
   const { error } = await clientSupabase.from("post").delete().eq("id", id);
 
