@@ -1,10 +1,12 @@
 "use client";
 
+import { useCallback, useEffect, useState } from "react";
+
 import { useForm, SubmitHandler } from "react-hook-form";
 
+import { deletePost, insertPost, readPost } from "@/api/supabase";
+
 import styles from "@/styles/page.module.scss";
-import { insertPost, readPost } from "@/api/supabase";
-import { useEffect, useState } from "react";
 
 export interface InputForm {
   title: string;
@@ -19,25 +21,35 @@ export interface Post {
 }
 
 export default function Home() {
-  const { register, handleSubmit } = useForm<InputForm>();
+  const { register, setValue, handleSubmit } = useForm<InputForm>();
 
   const [posts, setPosts] = useState<Post[] | null>(null);
 
-  useEffect(() => {
-    const fetch = async () => {
-      const data = await readPost();
+  const fetch = useCallback(async () => {
+    const data = await readPost();
 
-      if (data) {
-        setPosts(data);
-      }
-    };
-
-    fetch();
+    if (data) {
+      setPosts(data);
+    }
   }, []);
+
+  useEffect(() => {
+    fetch();
+  }, [fetch]);
 
   const onSubmitHandler: SubmitHandler<InputForm> = async (data) => {
     await insertPost(data);
-    console.log(data);
+
+    setValue("comment", "");
+    setValue("title", "");
+
+    await fetch();
+  };
+
+  const onClickDeleteHandler = async (id: number) => {
+    await deletePost(id);
+
+    await fetch();
   };
 
   return (
@@ -57,7 +69,14 @@ export default function Home() {
                 <p>{item.title}</p>
                 <p>{item.comment}</p>
               </div>
-              <button>삭제</button>
+              <div>
+                <button onClick={() => onClickDeleteHandler(item.id)}>
+                  삭제
+                </button>
+                <button onClick={() => onClickDeleteHandler(item.id)}>
+                  수정
+                </button>
+              </div>
             </div>
           ))}
         </section>
