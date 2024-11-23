@@ -55,8 +55,11 @@ export default function Home() {
           <h2>포스트</h2>
           {posts.map((item) => (
             <div className={styles.post_card} key={item.id}>
-              <p>{item.title}</p>
-              <p>{item.comment}</p>
+              <div className={styles.content}>
+                <p>{item.title}</p>
+                <p>{item.comment}</p>
+              </div>
+              <button>삭제</button>
             </div>
           ))}
         </section>
