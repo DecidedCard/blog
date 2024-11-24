@@ -15,7 +15,7 @@ const useInsertData = () => {
     },
   });
 
-  return insert;
+  return { insert };
 };
 
 export default useInsertData;

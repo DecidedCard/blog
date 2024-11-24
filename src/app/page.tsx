@@ -5,6 +5,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 
 import styles from "@/styles/page.module.scss";
 import PostList from "@/components/post/PostList";
+import useInsertData from "@/hooks/useInsertData";
 
 export interface InputForm {
   title: string;
@@ -20,9 +21,10 @@ export interface Post {
 
 const Home = () => {
   const { register, setValue, handleSubmit } = useForm<InputForm>();
+  const { insert } = useInsertData();
 
   const onSubmitHandler: SubmitHandler<InputForm> = async (data) => {
-    console.log(data);
+    insert(data);
 
     setValue("title", "");
     setValue("comment", "");
