@@ -1,12 +1,10 @@
 "use client";
-
-import { useCallback, useEffect, useState } from "react";
+import { Suspense } from "react";
 
 import { useForm, SubmitHandler } from "react-hook-form";
 
-import { deletePost, insertPost, readPost, updatePost } from "@/api/supabase";
-
 import styles from "@/styles/page.module.scss";
+import PostList from "@/components/post/PostList";
 
 export interface InputForm {
   title: string;
@@ -20,63 +18,14 @@ export interface Post {
   comment: string;
 }
 
-interface UpdateCheck {
-  updateCheck: boolean;
-  id: number;
-}
-
 const Home = () => {
   const { register, setValue, handleSubmit } = useForm<InputForm>();
 
-  const [posts, setPosts] = useState<Post[] | null>(null);
-  const [update, setUpdate] = useState<UpdateCheck | null>(null);
-
-  const fetch = useCallback(async () => {
-    const data = await readPost();
-
-    if (data) {
-      setPosts(data);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetch();
-  }, [fetch]);
-
   const onSubmitHandler: SubmitHandler<InputForm> = async (data) => {
-    if (update) {
-      if (update.updateCheck) {
-        await updatePost(update.id, data);
-        await fetch();
-      }
+    console.log(data);
 
-      setValue("comment", "");
-      setValue("title", "");
-
-      setUpdate(null);
-
-      return;
-    }
-
-    await insertPost(data);
-
-    setValue("comment", "");
     setValue("title", "");
-
-    await fetch();
-  };
-
-  const onClickDeleteHandler = async (id: number) => {
-    await deletePost(id);
-
-    await fetch();
-  };
-
-  const onClickSetUpdateHandler = (post: Post, id: number) => {
-    setUpdate({ updateCheck: true, id });
-
-    setValue("comment", post.comment);
-    setValue("title", post.title);
+    setValue("comment", "");
   };
 
   return (
@@ -84,30 +33,11 @@ const Home = () => {
       <form onSubmit={handleSubmit(onSubmitHandler)}>
         <input type="text" placeholder="제목" {...register("title")} />
         <input type="text" placeholder="내용" {...register("comment")} />
-        <button type="submit">{update?.updateCheck ? "수정" : "등록"}</button>
+        <button type="submit">등록</button>
       </form>
-
-      {posts && posts.length !== 0 && (
-        <section className={styles.posts}>
-          <h2>포스트</h2>
-          {posts.map((item) => (
-            <div className={styles.post_card} key={item.id}>
-              <div className={styles.content}>
-                <p>{item.title}</p>
-                <p>{item.comment}</p>
-              </div>
-              <div>
-                <button onClick={() => onClickDeleteHandler(item.id)}>
-                  삭제
-                </button>
-                <button onClick={() => onClickSetUpdateHandler(item, item.id)}>
-                  수정
-                </button>
-              </div>
-            </div>
-          ))}
-        </section>
-      )}
+      <Suspense>
+        <PostList />
+      </Suspense>
     </div>
   );
 };
